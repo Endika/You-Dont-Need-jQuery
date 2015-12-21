@@ -1,4 +1,4 @@
-## You Don't Need jQuery
+## You Don't Need jQuery [![Build Status](https://travis-ci.org/oneuijs/You-Dont-Need-jQuery.svg)](https://travis-ci.org/oneuijs/You-Dont-Need-jQuery)
 
 Frontend environments evolve rapidly nowadays, modern browsers have already implemented a great deal of DOM/BOM APIs which are good enough. We don't have to learn jQuery from scratch for DOM manipulation or events. In the meantime, thanks to the prevailment of frontend libraries such as React, Angular and Vue, manipulating DOM directly becomes anti-pattern, jQuery has never been less important. This project summarizes most of the jQuery method alternatives in native implementation, with IE 10+ support.
 
@@ -10,7 +10,8 @@ Frontend environments evolve rapidly nowadays, modern browsers have already impl
 1. [Ajax](#ajax)
 1. [Events](#events)
 1. [Utilities](#utilities)
-1. [Translation](#translation)
+1. [Alternatives](#alternatives)
+1. [Translations](#translations)
 1. [Browser Support](#browser-support)
 
 ## Query Selector
@@ -68,50 +69,15 @@ In place of common selectors like class, id or attribute we can use `document.qu
   document.querySelectorAll('a[target=_blank]');
   ```
 
-- [1.4](#1.4) <a name='1.4'></a> Find sth.
+- [1.4](#1.4) <a name='1.4'></a> Query in descendents
 
-  + Find nodes
+  ```js
+  // jQuery
+  $el.find('li');
 
-    ```js
-    // jQuery
-    $el.find('li');
-
-    // Native
-    el.querySelectorAll('li');
-    ```
-
-  + Find body
-
-    ```js
-    // jQuery
-    $('body');
-
-    // Native
-    document.body;
-    ```
-
-  + Find Attribute
-
-    ```js
-    // jQuery
-    $el.attr('foo');
-
-    // Native
-    e.getAttribute('foo');
-    ```
-
-  + Find data attribute
-
-    ```js
-    // jQuery
-    $el.data('foo');
-
-    // Native
-    // using getAttribute
-    el.getAttribute('data-foo');
-    // you can also use `dataset` if only need to support IE 11+
-    el.dataset['foo'];
-    ```
+  // Native
+  el.querySelectorAll('li');
+  ```
 
 - [1.5](#1.5) <a name='1.5'></a> Sibling/Previous/Next Elements
 
@@ -135,14 +101,15 @@ In place of common selectors like class, id or attribute we can use `document.qu
 
     // Native
     el.previousElementSibling;
-
     ```
 
   + Next elements
 
     ```js
-    // next
+    // jQuery
     $el.next();
+
+    // Native
     el.nextElementSibling;
     ```
 
@@ -152,9 +119,12 @@ In place of common selectors like class, id or attribute we can use `document.qu
 
   ```js
   // jQuery
-  $el.closest(queryString);
+  $el.closest(selector);
+  
+  // Native - Only latest, NO IE
+  el.closest(selector);
 
-  // Native
+  // Native - IE10+ 
   function closest(el, selector) {
     const matchesSelector = el.matches || el.webkitMatchesSelector || el.mozMatchesSelector || el.msMatchesSelector;
 
@@ -242,6 +212,49 @@ In place of common selectors like class, id or attribute we can use `document.qu
 
     // Native
     iframe.contentDocument.querySelectorAll('.css');
+    ```
+
+- [1.10](#1.10) <a name='1.10'></a> Get body
+
+  ```js
+  // jQuery
+  $('body');
+
+  // Native
+  document.body;
+  ```
+
+- [1.11](#1.11) <a name='1.11'></a> Attribute getter and setter
+
+  + Get an attribute
+
+    ```js
+    // jQuery
+    $el.attr('foo');
+
+    // Native
+    el.getAttribute('foo');
+    ```
+  + Set an attribute
+
+    ```js
+    // jQuery, note that this works in memory without change the DOM
+    $el.attr('foo', 'bar');
+
+    // Native
+    el.setAttribute('foo', 'bar');
+    ```
+
+  + Get a `data-` attribute
+
+    ```js
+    // jQuery
+    $el.data('foo');
+
+    // Native (use `getAttribute`)
+    el.getAttribute('data-foo');
+    // Native (use `dataset` if only need to support IE 11+)
+    el.dataset['foo'];
     ```
 
 **[⬆ back to top](#table-of-contents)**
@@ -470,10 +483,7 @@ In place of common selectors like class, id or attribute we can use `document.qu
   $el.append("<div id='container'>hello</div>");
 
   // Native
-  let newEl = document.createElement('div');
-  newEl.setAttribute('id', 'container');
-  newEl.innerHTML = 'hello';
-  el.appendChild(newEl);
+  el.insertAdjacentHTML("beforeend","<div id='container'>hello</div>");
   ```
 
 - [3.5](#3.5) <a name='3.5'></a> Prepend
@@ -483,10 +493,7 @@ In place of common selectors like class, id or attribute we can use `document.qu
   $el.prepend("<div id='container'>hello</div>");
 
   // Native
-  let newEl = document.createElement('div');
-  newEl.setAttribute('id', 'container');
-  newEl.innerHTML = 'hello';
-  el.insertBefore(newEl, el.firstChild);
+  el.insertAdjacentHTML("afterbegin","<div id='container'>hello</div>");
   ```
 
 - [3.6](#3.6) <a name='3.6'></a> insertBefore
@@ -515,11 +522,37 @@ In place of common selectors like class, id or attribute we can use `document.qu
   target.parentNode.insertBefore(newEl, target.nextSibling);
   ```
 
+- [3.8](#3.8) <a name='3.8'></a> is
+
+  Returns `true` if it matches the query selector
+
+  ```js
+  // jQuery - Notice `is` also work with `function` or `elements` which is not concerned here
+  $el.is(selector);
+
+  // Native
+  el.matches(selector);
+  ```
+- [3.9](#3.9) <a name='3.9'></a> clone
+
+  Create a deep copy of that element
+
+  ```js
+  // jQuery 
+  $el.clone(); 
+
+  // Native
+  el.cloneNode();
+  
+  // For Deep clone , set param as `true`  
+  ``` 
 **[⬆ back to top](#table-of-contents)**
 
 ## Ajax
 
-Replace with [fetch](https://github.com/camsong/fetch-ie8) and [fetch-jsonp](https://github.com/camsong/fetch-jsonp)
+[Fetch API](https://fetch.spec.whatwg.org/) is the new standard to replace XMLHttpRequest to do ajax. It works on Chrome and Firefox, you can use polyfills to make it work on legacy browsers.
+
+Try [github/fetch](http://github.com/github/fetch) on IE9+ or [fetch-ie8](https://github.com/camsong/fetch-ie8/) on IE8+, [fetch-jsonp](https://github.com/camsong/fetch-jsonp) to make JSONP requests.
 
 **[⬆ back to top](#table-of-contents)**
 
@@ -612,7 +645,12 @@ For a complete replacement with namespace and delegation, refer to https://githu
 
 **[⬆ back to top](#table-of-contents)**
 
-## Translation
+## Alternatives
+
+* [You Might Not Need jQuery](http://youmightnotneedjquery.com/) - Examples of how to do common event, element, ajax etc with plain javascript.
+* [npm-dom](http://github.com/npm-dom) and [webmodules](http://github.com/webmodules) - Organizations you can find individual DOM modules on NPM
+
+## Translations
 
 * [한국어](./README.ko-KR.md)
 * [简体中文](./README.zh-CN.md)
@@ -620,6 +658,10 @@ For a complete replacement with namespace and delegation, refer to https://githu
 * [Bahasa Indonesia](./README-id.md)
 * [Português(PT-BR)](./README.pt-BR.md)
 * [Tiếng Việt Nam](./README-vi.md)
+* [Español](./README-es.md)
+* [Русский](./README-ru.md)
+* [Türkçe](./README-tr.md)
+* [Italian](./README-it.md)
 
 ## Browser Support
 

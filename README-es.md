@@ -1,161 +1,165 @@
-## Anda tidak memerlukan jQuery
 
-Dewasa ini perkembangan environment frontend sangatlah pesat, dimana banyak browser sudah mengimplementasikan DOM/BOM APIs dengan baik. Kita tidak perlu lagi belajar jQuery dari nol untuk keperluan manipulasi DOM atau events. Disaat yang sama; dengan berterimakasih kepada library frontend terkini seperti React, Angular dan Vue; Memanipulasi DOM secara langsung telah menjadi anti-pattern alias sesuatu yang tidak perlu dilakukan. Dengan kata lain, jQuery sekarang menjadi semakin tidak diperlukan. Projek ini memberikan informasi mengenai metode alternatif dari jQuery untuk implementasi Native dengan support untuk browser IE 10+.
+> #### You Don't Need jQuery
 
+Tú no necesitas jQuery
+---
+El desarrollo Frontend evoluciona día a día, y los navegadores modernos ya han implementado nativamente APIs para trabajar con DOM/BOM, las cuales son muy buenas, por lo que definitivamente no es necesario aprender jQuery desde cero para manipular el DOM. En la actualidad, gracias al surgimiento de librerías frontend como React, Angular y Vue, manipular el DOM es contrario a los patrones establecidos, y jQuery se ha vuelto menos importante. Este proyecto resume la mayoría de métodos alternativos a jQuery, pero de forma nativa con soporte IE 10+.
 
-## Daftar Isi
+## Tabla de Contenidos
 
 1. [Query Selector](#query-selector)
-1. [CSS & Style](#css-style)
-1. [DOM Manipulation](#dom-manipulation)
+1. [CSS & Estilo](#css--estilo)
+1. [Manipulación DOM](#manipulación-dom)
 1. [Ajax](#ajax)
-1. [Events](#events)
-1. [Utilities](#utilities)
-1. [Translation](#translation)
-1. [Browser Support](#browser-yang-di-support)
+1. [Eventos](#eventos)
+1. [Utilidades](#utilidades)
+1. [Traducción](#traducción)
+1. [Soporte de Navegadores](#soporte-de-navegadores)
+
 
 ## Query Selector
 
-Untuk selector-selector umum seperti class, id atau attribute, kita dapat menggunakan `document.querySelector` atau `document.querySelectorAll` sebagai pengganti. Perbedaan diantaranya adalah:
-* `document.querySelector` mengembalikan elemen pertama yang cocok
-* `document.querySelectorAll` mengembalikan semua elemen yang cocok sebagai NodeList. Hasilnya bisa dikonversikan menjadi Array `[].slice.call(document.querySelectorAll(selector) || []);`
-* Bila tidak ada hasil pengembalian elemen yang cocok, jQuery akan mengembalikan `[]` sedangkan DOM API akan mengembalikan `null`. Mohon diperhatikan mengenai Null Pointer Exception. Anda juga bisa menggunakan operator `||` untuk set nilai awal jika hasil pencarian tidak ditemukan : `document.querySelectorAll(selector) || []`
+En lugar de los selectores comunes como clase, id o atributos podemos usar `document.querySelector` o `document.querySelectorAll` como alternativas. Las diferencias radican en:
+* `document.querySelector` devuelve el primer elemento que cumpla con la condición
+* `document.querySelectorAll` devuelve todos los elementos que cumplen con la condición en forma de NodeList. Puede ser convertido a Array usando `[].slice.call(document.querySelectorAll(selector) || []);`
+* Si ningún elemento cumple con la condición, jQuery retornaría `[]` mientras la API DOM retornaría `null`. Nótese el NullPointerException. Se puede usar `||` para establecer el valor por defecto al no encontrar elementos, como en `document.querySelectorAll(selector) || []`
 
-> Perhatian: `document.querySelector` dan `document.querySelectorAll` sedikit **LAMBAT**. Silahkan menggunakan `getElementById`, `document.getElementsByClassName` atau `document.getElementsByTagName` jika anda menginginkan tambahan performa.
+> Notice: `document.querySelector` and `document.querySelectorAll` are quite **SLOW**, try to use `getElementById`, `document.getElementsByClassName` o `document.getElementsByTagName` if you want to Obtener a performance bonus.
 
-- [1.0](#1.0) <a name='1.0'></a> Query by selector
+- [1.0](#1.0) <a name='1.0'></a> Buscar por selector
 
   ```js
   // jQuery
   $('selector');
 
-  // Native
+  // Nativo
   document.querySelectorAll('selector');
   ```
 
-- [1.1](#1.1) <a name='1.1'></a> Query by class
+- [1.1](#1.1) <a name='1.1'></a> Buscar por Clase
 
   ```js
   // jQuery
   $('.class');
 
-  // Native
+  // Nativo
   document.querySelectorAll('.class');
 
-  // or
+  // Forma alternativa
   document.getElementsByClassName('class');
   ```
 
-- [1.2](#1.2) <a name='1.2'></a> Query by id
+- [1.2](#1.2) <a name='1.2'></a> Buscar por id
 
   ```js
   // jQuery
   $('#id');
 
-  // Native
+  // Nativo
   document.querySelector('#id');
 
-  // or
+  // Forma alternativa
   document.getElementById('id');
   ```
 
-- [1.3](#1.3) <a name='1.3'></a> Query menggunakan attribute
+- [1.3](#1.3) <a name='1.3'></a> Buscar por atributo
 
   ```js
   // jQuery
   $('a[target=_blank]');
 
-  // Native
+  // Nativo
   document.querySelectorAll('a[target=_blank]');
   ```
 
-- [1.4](#1.4) <a name='1.4'></a> Pencarian.
+- [1.4](#1.4) <a name='1.4'></a> Buscar
 
-  + Mencari nodes
+  + Buscar nodos
 
     ```js
     // jQuery
     $el.find('li');
 
-    // Native
+    // Nativo
     el.querySelectorAll('li');
     ```
 
-  + Mencari body
+  + Buscar "body"
 
     ```js
     // jQuery
     $('body');
 
-    // Native
+    // Nativo
     document.body;
     ```
 
-  + Mencari Attribute
+  + Buscar Atributo
 
     ```js
     // jQuery
     $el.attr('foo');
 
-    // Native
+    // Nativo
     e.getAttribute('foo');
     ```
 
-  + Mencari data attribute
+  + Buscar atributo "data"
 
     ```js
     // jQuery
     $el.data('foo');
 
-    // Native
-    // gunakan getAttribute
+    // Nativo
+    // Usando getAttribute
     el.getAttribute('data-foo');
-    // anda juga bisa menggunakan `dataset` bila anda perlu support IE 11+
+    // También puedes utilizar `dataset` desde IE 11+
     el.dataset['foo'];
     ```
 
-- [1.5](#1.5) <a name='1.5'></a> Elemen-elemen Sibling/Previous/Next
+- [1.5](#1.5) <a name='1.5'></a> Elementos Hermanos/Previos/Siguientes
 
-  + Elemen Sibling
+  + Elementos hermanos
 
     ```js
     // jQuery
     $el.siblings();
 
-    // Native
+    // Nativo
     [].filter.call(el.parentNode.children, function(child) {
       return child !== el;
     });
     ```
 
-  + Elemen Previous
+  + Elementos previos
 
     ```js
     // jQuery
     $el.prev();
 
-    // Native
+    // Nativo
     el.previousElementSibling;
-
     ```
 
-  + Elemen Next
+  + Elementos siguientes
 
     ```js
-    // next
+    // jQuery
     $el.next();
+
+    // Nativo
     el.nextElementSibling;
     ```
 
 - [1.6](#1.6) <a name='1.6'></a> Closest
 
-  Mengembalikan elemen pertama yang cocok dari selector yang digunakan, dengan cara mencari mulai dari elemen-sekarang sampai ke document.
+  Retorna el elemento más cercano que coincida con la condición, partiendo desde el nodo actual hasta document.
 
   ```js
   // jQuery
   $el.closest(queryString);
 
-  // Native
+  // Nativo
   function closest(el, selector) {
     const matchesSelector = el.matches || el.webkitMatchesSelector || el.mozMatchesSelector || el.msMatchesSelector;
 
@@ -172,18 +176,18 @@ Untuk selector-selector umum seperti class, id atau attribute, kita dapat menggu
 
 - [1.7](#1.7) <a name='1.7'></a> Parents Until
 
-  Digunakan untuk mendapatkan "ancestor" dari setiap elemen yang ditemukan. Namun tidak termasuk elemen-sekarang yang didapat dari pencarian oleh selector, DOM node, atau object jQuery.
+  Obtiene los ancestros de cada elemento en el set actual de elementos que cumplan con la condición, sin incluir el actual
 
   ```js
   // jQuery
   $el.parentsUntil(selector, filter);
 
-  // Native
+  // Nativo
   function parentsUntil(el, selector, filter) {
     const result = [];
     const matchesSelector = el.matches || el.webkitMatchesSelector || el.mozMatchesSelector || el.msMatchesSelector;
 
-    // match start from parent
+    // Partir desde el elemento padre
     el = el.parentElement;
     while (el && !matchesSelector.call(el, selector)) {
       if (!filter) {
@@ -199,7 +203,7 @@ Untuk selector-selector umum seperti class, id atau attribute, kita dapat menggu
   }
   ```
 
-- [1.8](#1.8) <a name='1.8'></a> Form
+- [1.8](#1.8) <a name='1.8'></a> Formularios
 
   + Input/Textarea
 
@@ -207,104 +211,104 @@ Untuk selector-selector umum seperti class, id atau attribute, kita dapat menggu
     // jQuery
     $('#my-input').val();
 
-    // Native
+    // Nativo
     document.querySelector('#my-input').value;
     ```
 
-  + Get index of e.currentTarget between `.radio`
+  + Obtener el índice de e.currentTarget en `.radio`
 
     ```js
     // jQuery
     $(e.currentTarget).index('.radio');
 
-    // Native
+    // Nativo
     [].indexOf.call(document.querySelectAll('.radio'), e.currentTarget);
     ```
 
-- [1.9](#1.9) <a name='1.9'></a> Iframe Contents
+- [1.9](#1.9) <a name='1.9'></a> Contenidos de Iframe
 
-  `$('iframe').contents()` mengembalikan `contentDocument`
+  `$('iframe').contents()` devuelve `contentDocument` para este iframe específico
 
-  + Iframe contents
+  + Contenidos de Iframe
 
     ```js
     // jQuery
     $iframe.contents();
 
-    // Native
+    // Nativo
     iframe.contentDocument;
     ```
 
-  + Iframe Query
+  + Buscar dentro de un Iframe
 
     ```js
     // jQuery
     $iframe.contents().find('.css');
 
-    // Native
+    // Nativo
     iframe.contentDocument.querySelectorAll('.css');
     ```
 
-**[⬆ back to top](#daftar-isi)**
+**[⬆ volver al inicio](#tabla-de-contenidos)**
 
-## CSS Style
+## CSS & Estilo
 
 - [2.1](#2.1) <a name='2.1'></a> CSS
 
-  + Get style
+  + Obtener Estilo
 
     ```js
     // jQuery
     $el.css("color");
 
-    // Native
-    // PERHATIAN: ada bug disini, dimana fungsi ini akan mengembalikan nilai 'auto' bila nilai dari atribut style adalah 'auto'
+    // Nativo
+    // NOTA: Bug conocido, retornará 'auto' si el valor de estilo es 'auto'
     const win = el.ownerDocument.defaultView;
-    // null artinya tidak mengembalikan pseudo styles
+    // null significa que no tiene pseudo estilos
     win.getComputedStyle(el, null).color;
     ```
 
-  + Set style
+  + Establecer style
 
     ```js
     // jQuery
     $el.css({ color: "#ff0011" });
 
-    // Native
+    // Nativo
     el.style.color = '#ff0011';
     ```
 
-  + Get/Set Styles
+  + Obtener/Establecer Estilos
 
-    Mohon dicatat jika anda ingin men-set banyak style bersamaan, anda dapat menemukan referensi di metode [setStyles](https://github.com/oneuijs/oui-dom-utils/blob/master/src/index.js#L194) pada package oui-dom-utils
+    Nótese que si se desea establecer múltiples estilos a la vez, se puede utilizar el método [setStyles](https://github.com/oneuijs/oui-dom-utils/blob/master/src/index.js#L194) en el paquete oui-dom-utils.
 
-  + Add class
+  + Agregar clase
 
     ```js
     // jQuery
     $el.addClass(className);
 
-    // Native
+    // Nativo
     el.classList.add(className);
     ```
 
-  + Remove class
+  + Quitar Clase
 
     ```js
     // jQuery
     $el.removeClass(className);
 
-    // Native
+    // Nativo
     el.classList.remove(className);
     ```
 
-  + has class
+  + Consultar si tiene clase
 
     ```js
     // jQuery
     $el.hasClass(className);
 
-    // Native
+    // Nativo
     el.classList.contains(className);
     ```
 
@@ -314,42 +318,42 @@ Untuk selector-selector umum seperti class, id atau attribute, kita dapat menggu
     // jQuery
     $el.toggleClass(className);
 
-    // Native
+    // Nativo
     el.classList.toggle(className);
     ```
 
 - [2.2](#2.2) <a name='2.2'></a> Width & Height
 
-  Secara teori, width dan height identik, contohnya Height:
+  Ancho y Alto son teóricamente idénticos. Usaremos el Alto como ejemplo:
 
-  + Window height
+  + Alto de Ventana
 
     ```js
-    // window height
+    // alto de ventana
     $(window).height();
-    // without scrollbar, behaves like jQuery
+    // Sin scrollbar, se comporta como jQuery
     window.document.documentElement.clientHeight;
-    // with scrollbar
+    // Con scrollbar
     window.innerHeight;
     ```
 
-  + Document height
+  + Alto de Documento
 
     ```js
     // jQuery
     $(document).height();
 
-    // Native
+    // Nativo
     document.documentElement.scrollHeight;
     ```
 
-  + Element height
+  + Alto de Elemento
 
     ```js
     // jQuery
     $el.height();
 
-    // Native
+    // Nativo
     function getHeight(el) {
       const styles = this.getComputedStyles(el);
       const height = el.offsetHeight;
@@ -359,21 +363,21 @@ Untuk selector-selector umum seperti class, id atau attribute, kita dapat menggu
       const paddingBottom = parseFloat(styles.paddingBottom);
       return height - borderBottomWidth - borderTopWidth - paddingTop - paddingBottom;
     }
-    // accurate to integer（when `border-box`, it's `height`; when `content-box`, it's `height + padding + border`）
+    // Precisión de integer（when `border-box`, it's `height`; when `content-box`, it's `height + padding + border`）
     el.clientHeight;
-    // accurate to decimal（when `border-box`, it's `height`; when `content-box`, it's `height + padding + border`）
+    // Precisión de decimal（when `border-box`, it's `height`; when `content-box`, it's `height + padding + border`）
     el.getBoundingClientRect().height;
     ```
 
-- [2.3](#2.3) <a name='2.3'></a> Position & Offset
+- [2.3](#2.3) <a name='2.3'></a> Posición & Offset
 
-  + Position
+  + Posición
 
     ```js
     // jQuery
     $el.position();
 
-    // Native
+    // Nativo
     { left: el.offsetLeft, top: el.offsetTop }
     ```
 
@@ -383,7 +387,7 @@ Untuk selector-selector umum seperti class, id atau attribute, kita dapat menggu
     // jQuery
     $el.offset();
 
-    // Native
+    // Nativo
     function getOffset (el) {
       const box = el.getBoundingClientRect();
 
@@ -394,156 +398,154 @@ Untuk selector-selector umum seperti class, id atau attribute, kita dapat menggu
     }
     ```
 
-- [2.4](#2.4) <a name='2.4'></a> Scroll Top
+- [2.4](#2.4) <a name='2.4'></a> Posición del Scroll Vertical
 
   ```js
   // jQuery
   $(window).scrollTop();
 
-  // Native
+  // Nativo
   (document.documentElement && document.documentElement.scrollTop) || document.body.scrollTop;
   ```
 
-**[⬆ back to top](#daftar-isi)**
+**[⬆ volver al inicio](#tabla-de-contenidos)**
 
-## DOM Manipulation
+## Manipulación DOM
 
 - [3.1](#3.1) <a name='3.1'></a> Remove
   ```js
   // jQuery
   $el.remove();
 
-  // Native
+  // Nativo
   el.parentNode.removeChild(el);
   ```
 
 - [3.2](#3.2) <a name='3.2'></a> Text
 
-  + Get text
+  + Obtener Texto
 
     ```js
     // jQuery
     $el.text();
 
-    // Native
+    // Nativo
     el.textContent;
     ```
 
-  + Set text
+  + Establecer Texto
 
     ```js
     // jQuery
     $el.text(string);
 
-    // Native
+    // Nativo
     el.textContent = string;
     ```
 
 - [3.3](#3.3) <a name='3.3'></a> HTML
 
-  + Get HTML
+  + Obtener HTML
 
     ```js
     // jQuery
     $el.html();
 
-    // Native
+    // Nativo
     el.innerHTML;
     ```
 
-  + Set HTML
+  + Establecer HTML
 
     ```js
     // jQuery
     $el.html(htmlString);
 
-    // Native
+    // Nativo
     el.innerHTML = htmlString;
     ```
 
 - [3.4](#3.4) <a name='3.4'></a> Append
 
-  Menambahkan elemen-anak setelah anak terakhir dari elemen-parent
+  Añadir elemento hijo después del último hijo del elemento padre
 
   ```js
   // jQuery
   $el.append("<div id='container'>hello</div>");
 
-  // Native
-  let newEl = document.createElement('div');
-  newEl.setAttribute('id', 'container');
-  newEl.innerHTML = 'hello';
-  el.appendChild(newEl);
+  // Nativo
+  el.insertAdjacentHTML("beforeend","<div id='container'>hello</div>");
   ```
 
 - [3.5](#3.5) <a name='3.5'></a> Prepend
+
+  Añadir elemento hijo después del último hijo del elemento padre
 
   ```js
   // jQuery
   $el.prepend("<div id='container'>hello</div>");
 
-  // Native
-  let newEl = document.createElement('div');
-  newEl.setAttribute('id', 'container');
-  newEl.innerHTML = 'hello';
-  el.insertBefore(newEl, el.firstChild);
+  // Nativo
+  el.insertAdjacentHTML("afterbegin","<div id='container'>hello</div>");
   ```
 
 - [3.6](#3.6) <a name='3.6'></a> insertBefore
 
-  Memasukkan node baru sebelum elemen yang dipilih.
+  Insertar un nuevo nodo antes del primero de los elementos seleccionados
 
   ```js
   // jQuery
   $newEl.insertBefore(queryString);
 
-  // Native
+  // Nativo
   const target = document.querySelector(queryString);
   target.parentNode.insertBefore(newEl, target);
   ```
 
 - [3.7](#3.7) <a name='3.7'></a> insertAfter
 
-  Memasukkan node baru sesudah elemen yang dipilih.
+  Insertar un nuevo nodo después de los elementos seleccionados
 
   ```js
   // jQuery
   $newEl.insertAfter(queryString);
 
-  // Native
+  // Nativo
   const target = document.querySelector(queryString);
   target.parentNode.insertBefore(newEl, target.nextSibling);
   ```
 
-**[⬆ back to top](#daftar-isi)**
+**[⬆ volver al inicio](#tabla-de-contenidos)**
 
 ## Ajax
 
-Gantikan dengan [fetch](https://github.com/camsong/fetch-ie8) dan [fetch-jsonp](https://github.com/camsong/fetch-jsonp)
+Reemplazar con [fetch](https://github.com/camsong/fetch-ie8) y [fetch-jsonp](https://github.com/camsong/fetch-jsonp)
++[Fetch API](https://fetch.spec.whatwg.org/) es el nuevo estándar quue reemplaza a XMLHttpRequest para efectuar peticiones AJAX. Funciona en Chrome y Firefox, como también es posible usar un polyfill en otros navegadores.
++
++Es una buena alternativa utilizar [github/fetch](http://github.com/github/fetch) en IE9+ o [fetch-ie8](https://github.com/camsong/fetch-ie8/) en IE8+, [fetch-jsonp](https://github.com/camsong/fetch-jsonp) para efectuar peticiones JSONP.
+**[⬆ volver al inicio](#tabla-de-contenidos)**
 
-**[⬆ back to top](#daftar-isi)**
+## Eventos
 
-## Events
+Para un reemplazo completo con namespace y delegación, utilizar https://github.com/oneuijs/oui-dom-events
 
-Untuk penggantian secara menyeluruh dengan namespace dan delegation, rujuk ke https://github.com/oneuijs/oui-dom-events
-
-- [5.1](#5.1) <a name='5.1'></a> Bind event dengan menggunakan on
+- [5.1](#5.1) <a name='5.1'></a> Asignar un evento con "on"
 
   ```js
   // jQuery
   $el.on(eventName, eventHandler);
 
-  // Native
+  // Nativo
   el.addEventListener(eventName, eventHandler);
   ```
 
-- [5.2](#5.2) <a name='5.2'></a> Unbind event dengan menggunakan off
+- [5.2](#5.2) <a name='5.2'></a> Desasignar un evento con "off"
 
   ```js
   // jQuery
   $el.off(eventName, eventHandler);
 
-  // Native
+  // Nativo
   el.removeEventListener(eventName, eventHandler);
   ```
 
@@ -553,7 +555,7 @@ Untuk penggantian secara menyeluruh dengan namespace dan delegation, rujuk ke ht
   // jQuery
   $(el).trigger('custom-event', {key1: 'data'});
 
-  // Native
+  // Nativo
   if (window.CustomEvent) {
     const event = new CustomEvent('custom-event', {detail: {key1: 'data'}});
   } else {
@@ -564,9 +566,9 @@ Untuk penggantian secara menyeluruh dengan namespace dan delegation, rujuk ke ht
   el.dispatchEvent(event);
   ```
 
-**[⬆ back to top](#daftar-isi)**
+**[⬆ volver al inicio](#tabla-de-contenidos)**
 
-## Utilities
+## Utilidades
 
 - [6.1](#6.1) <a name='6.1'></a> isArray
 
@@ -574,7 +576,7 @@ Untuk penggantian secara menyeluruh dengan namespace dan delegation, rujuk ke ht
   // jQuery
   $.isArray(range);
 
-  // Native
+  // Nativo
   Array.isArray(range);
   ```
 
@@ -584,19 +586,19 @@ Untuk penggantian secara menyeluruh dengan namespace dan delegation, rujuk ke ht
   // jQuery
   $.trim(string);
 
-  // Native
+  // Nativo
   string.trim();
   ```
 
 - [6.3](#6.3) <a name='6.3'></a> Object Assign
 
-  Extend, use object.assign polyfill https://github.com/ljharb/object.assign
+  Utilizar polyfill para object.assign https://github.com/ljharb/object.assign
 
   ```js
   // jQuery
   $.extend({}, defaultOpts, opts);
 
-  // Native
+  // Nativo
   Object.assign({}, defaultOpts, opts);
   ```
 
@@ -606,13 +608,13 @@ Untuk penggantian secara menyeluruh dengan namespace dan delegation, rujuk ke ht
   // jQuery
   $.contains(el, child);
 
-  // Native
+  // Nativo
   el !== child && el.contains(child);
   ```
 
-**[⬆ back to top](#daftar-isi)**
+**[⬆ volver al inicio](#tabla-de-contenidos)**
 
-## Terjemahan
+## Traducción
 
 * [한국어](./README.ko-KR.md)
 * [简体中文](./README.zh-CN.md)
@@ -620,15 +622,16 @@ Untuk penggantian secara menyeluruh dengan namespace dan delegation, rujuk ke ht
 * [Bahasa Indonesia](./README-id.md)
 * [Português(PT-BR)](./README.pt-BR.md)
 * [Tiếng Việt Nam](./README-vi.md)
+* [Español](./README-es.md)
 * [Русский](./README-ru.md)
 * [Türkçe](./README-tr.md)
 
-## Browser yang di Support
+## Soporte de Navegadores
 
 ![Chrome](https://raw.github.com/alrra/browser-logos/master/chrome/chrome_48x48.png) | ![Firefox](https://raw.github.com/alrra/browser-logos/master/firefox/firefox_48x48.png) | ![IE](https://raw.github.com/alrra/browser-logos/master/internet-explorer/internet-explorer_48x48.png) | ![Opera](https://raw.github.com/alrra/browser-logos/master/opera/opera_48x48.png) | ![Safari](https://raw.github.com/alrra/browser-logos/master/safari/safari_48x48.png)
 --- | --- | --- | --- | --- |
-Latest ✔ | Latest ✔ | 10+ ✔ | Latest ✔ | 6.1+ ✔ |
+Última ✔ | Última ✔ | 10+ ✔ | Última ✔ | 6.1+ ✔ |
 
-# License
+# Licencia
 
 MIT
